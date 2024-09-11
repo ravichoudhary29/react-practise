@@ -1,58 +1,46 @@
 import { useState } from "react";
 import "./App.css";
 
-let newId = 3;
 const initialVal = [
   { id: 1, name: "grapes" },
   { id: 2, name: "apple" },
 ];
 
 function App() {
-  const [data, setData] = useState(initialVal);
+  const [selectedIds, setSelectedIds] = useState([]);
 
-  const handleDelete = (id) => {
-    setData((prev) => {
-      return prev.filter((t) => t.id !== id);
+  const handleUpdate = (id) => {
+    setSelectedIds((prev) => {
+      if (!prev.includes(id)) {
+        return [...prev, id];
+      } else {
+        return prev.filter((t) => t !== id);
+      }
     });
   };
 
-  const handleAdd = (value) => {
-    setData((prev) => [
-      ...prev,
-      {
-        id: newId++,
-        name: value,
-      },
-    ]);
-  };
-  console.log(data);
+  // console.log(selectedIds);
+
+  const result = initialVal.filter((obj) => {
+    return selectedIds.map((t) => {
+      return obj.id === t;
+    });
+  });
+  console.log(result);
   return (
-    <div className="App">
-      <NewFruit onAdd={handleAdd} />
+    <div>
       <ul>
-        {data.map((el) => {
+        {initialVal.map((t) => {
           return (
-            <li key={el.id}>
-              {el.name}
-              <button key={el.id} onClick={() => handleDelete(el.id)}>
-                Delete
-              </button>
-            </li>
+            <button key={t.id} onClick={() => handleUpdate(t.id)}>
+              {t.name}
+            </button>
           );
         })}
       </ul>
+      <h3>You selected: {}</h3>
     </div>
   );
 }
-
-const NewFruit = ({ onAdd }) => {
-  const [fruit, setFruit] = useState("");
-  return (
-    <div>
-      <input value={fruit} onChange={(e) => setFruit(e.target.value)} />
-      <button onClick={() => onAdd(fruit)}>Add</button>
-    </div>
-  );
-};
 
 export default App;
